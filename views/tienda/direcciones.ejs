@@ -1,0 +1,16 @@
+<%- include('header') %>
+<section class="shop-page-heading"><span class="shop-kicker">TU CUENTA</span><h1>Mis direcciones<span>.</span></h1><p>El domicilio predeterminado aparece listo al finalizar una compra con envío.</p><nav class="account-tabs" aria-label="Tu cuenta"><a href="/mis-pedidos">Mis pedidos</a><a href="/mis-direcciones" aria-current="page">Mis direcciones</a></nav></section>
+<% if (aviso) { %><p class="shop-notice" role="status"><%= aviso %></p><% } %>
+<div class="address-book">
+<section class="address-list" aria-label="Domicilios guardados">
+<% if (!rows.length) { %><div class="shop-empty"><p>Aún no guardas domicilios. Agrega uno y lo tendrás listo al comprar.</p></div><% } %>
+<% for (const d of rows) { %><article class="address-card<%= d.predeterminada ? ' is-default' : '' %>"><div><strong><%= d.etiqueta %></strong><% if (d.predeterminada) { %><em>Predeterminada</em><% } %><p><%= d.texto %></p></div><div class="address-actions"><% if (!d.predeterminada) { %><form method="post" action="/mis-direcciones/<%= d.id %>/predeterminada"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="shop-text-link">Usar como predeterminada</button></form><% } %><form method="post" action="/mis-direcciones/<%= d.id %>?_method=DELETE" data-confirm="¿Eliminar este domicilio de tu libreta?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="shop-text-link address-delete" aria-label="Eliminar <%= d.etiqueta %>">Eliminar</button></form></div></article><% } %>
+</section>
+<section class="checkout-section address-new"><h2>Agregar domicilio</h2>
+<% if (rows.length >= max) { %><p>Tu libreta tiene el máximo de <%= max %> domicilios. Elimina uno para agregar otro.</p>
+<% } else { %><% for (const e of errors) { %><p class="shop-error" role="alert"><%= e %></p><% } %>
+<form method="post" action="/mis-direcciones"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><div data-address class="shop-form-grid shipping-address"><%- include('../plantillas/direccion-campos', { estados, v: values, campo: '', etiqueta: true }) %></div>
+<label class="shop-checkbox"><input type="checkbox" name="predeterminada" value="si" <%= values.predeterminada || !rows.length ? 'checked' : '' %>>Usar como domicilio predeterminado</label>
+<button class="shop-btn shop-btn-dark">Guardar domicilio ↗</button></form><% } %>
+</section></div>
+<%- include('footer') %>

@@ -1,0 +1,39 @@
+<%- include('plantillas/header') %>
+<% const personal = modo === 'personal', registro = modo === 'registro', v = values || {}; %>
+<div class="login-layout"><section class="login-story"><a class="brand" href="<%= personal ? '/admin' : '/' %>"><span class="brand-mark"><%- include('plantillas/icon', { name: 'wave' }) %></span><span>lonja<span class="brand-dot">.</span><small>VERACRUZ</small></span></a><div class="login-story-content">
+<% if (personal) { %><span class="eyebrow">DEL MAR A TU OPERACIÓN</span><h1>Un nuevo día.<br>Todo bajo control.</h1><p>Tu equipo, tus productos y cada venta.<br>La operación de la lonja, en un solo lugar.</p><div class="login-photo"><img src="/img/especies/pescado.jpg" alt="Pescado fresco en el mercado"><span class="photo-caption">Frescura que conecta.<small>Lonja de Veracruz</small></span></div>
+<% } else { %><span class="eyebrow">DEL MAR A TU MESA</span><h1>Lotes completos.<br>Directo de la lonja.</h1><p>Guarda tus domicilios, compra en menos pasos<br>y sigue cada pedido desde tu cuenta.</p><div class="login-photo"><img src="/img/especies/camaron.jpg" alt="Camarón blanco fresco"><span class="photo-caption">Del muelle a tu cocina.<small>Lonja de Veracruz</small></span></div><% } %>
+</div><span class="login-story-footer"><%= personal ? 'GESTIÓN SENCILLA. PRODUCTO FRESCO.' : 'COMPRA SENCILLA. PRODUCTO FRESCO.' %></span></section>
+<section class="login-access"><div class="login-form-wrap<%= registro ? ' login-form-wide' : '' %>">
+<span class="subtle-pill"><span class="status-dot"></span> <%= personal ? 'ACCESO DEL PERSONAL' : registro ? 'NUEVA CUENTA DE CLIENTE' : 'TU CUENTA DE CLIENTE' %></span>
+<h2><%= personal ? 'Qué bueno verte.' : registro ? 'Crea tu cuenta.' : 'Qué gusto verte.' %></h2>
+<p class="muted"><%= personal ? 'Ingresa a tu espacio de trabajo.' : registro ? 'Tus datos se guardan para que comprar te tome menos pasos.' : 'Inicia sesión para comprar y seguir tus pedidos.' %></p>
+<% for (const e of errors) { %><div class="notice notice-error" role="alert"><%= e %></div><% } %>
+<form action="<%= personal ? '/admin/login' : registro ? '/registro' : '/login' %>" method="post" class="login-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<% if (siguiente) { %><input type="hidden" name="siguiente" value="<%= siguiente %>"><% } %>
+<% if (registro) { %>
+<div class="field-grid">
+<label class="field">Nombre<input name="nombre" value="<%= v.nombre || '' %>" maxlength="80" autocomplete="given-name" required></label>
+<label class="field">Apellido paterno<input name="apellido_paterno" value="<%= v.apellido_paterno || '' %>" maxlength="80" autocomplete="family-name" required></label>
+<label class="field">Apellido materno<input name="apellido_materno" value="<%= v.apellido_materno || '' %>" maxlength="80" placeholder="Opcional"></label>
+<label class="field">Teléfono<input name="telefono" type="tel" value="<%= v.telefono || '' %>" minlength="10" maxlength="20" autocomplete="tel" placeholder="229 123 4567" required></label>
+<label class="field field-wide">Correo electrónico<input type="email" name="email" value="<%= v.email || '' %>" maxlength="80" autocomplete="email" placeholder="tu@correo.com" required></label>
+<label class="field">Contraseña<input type="password" name="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="Mínimo 8 caracteres" aria-describedby="password-ayuda" required><small class="field-feedback" id="password-ayuda" hidden></small></label>
+<label class="field">Confirma tu contraseña<input type="password" name="password2" minlength="8" maxlength="72" autocomplete="new-password" aria-describedby="password2-ayuda" required><small class="field-feedback" id="password2-ayuda" aria-live="polite" hidden></small></label>
+</div>
+<div class="register-address">
+<label class="login-check"><input type="checkbox" name="agregar_direccion" value="si" data-address-toggle <%= v.agregar_direccion ? 'checked' : '' %>><span><strong>Guardar mi domicilio de entrega</strong>Opcional. Lo tendrás listo al comprar con envío; puedes agregar más después.</span></label>
+<div data-address <%= v.agregar_direccion ? '' : 'hidden' %> class="field-grid shipping-address"><%- include('plantillas/direccion-campos', { estados, v, campo: 'field', etiqueta: true }) %></div>
+</div>
+<label class="login-check"><input type="checkbox" name="aceptar" value="si" required><span>Acepto usar datos de prueba y las condiciones de compra: lotes completos, recogida o envío nacional.</span></label>
+<% } else { %>
+<div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" name="email" autocomplete="username" value="<%= v.email || '' %>" placeholder="<%= personal ? 'nombre@lonja.com' : 'tu@correo.com' %>" required maxlength="80"></div>
+<div class="field"><label for="password">Contraseña</label><input id="password" type="password" name="password" autocomplete="current-password" placeholder="Tu contraseña" required></div>
+<% } %>
+<button class="button button-primary login-submit"><%= registro ? 'Crear mi cuenta' : 'Iniciar sesión' %> <%- include('plantillas/icon', { name: 'arrow' }) %></button></form>
+<% if (personal) { %><div class="access-help"><%- include('plantillas/icon', { name: 'users' }) %><p>¿Necesitas una cuenta?<br><span>Solicita tu acceso al administrador de la lonja.</span></p></div>
+<% } else if (registro) { %><div class="access-help access-register"><p>¿Ya tienes cuenta?<br><span>Entra con tu correo y contraseña.</span></p><a class="button button-secondary" href="/login<%= siguiente ? '?siguiente=' + encodeURIComponent(siguiente) : '' %>">Iniciar sesión</a></div>
+<% } else { %><div class="access-help access-register"><%- include('plantillas/icon', { name: 'users' }) %><p>¿Aún no tienes cuenta?<br><span>Regístrate en un minuto y compra más rápido.</span></p><a class="button button-secondary" href="/registro">Registrar</a></div><% } %>
+</div><p class="login-legal"><%= personal ? 'Sistema Lonja · Uso exclusivo del personal autorizado' : 'Lonja de Veracruz · Compras de demostración, sin cargos reales' %></p></section></div>
+<% if (registro) { %><script src="/js/direccion.js" defer></script><script src="/js/registro.js" defer></script><% } %>
+<%- include('plantillas/footer') %>

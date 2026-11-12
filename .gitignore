@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+artifacts/
+.DS_Store
+
+public/img/especies/subidas/*
+!public/img/especies/subidas/.gitkeep
+
+# Catálogo SEPOMEX de uso local: descargar durante la instalación.
+data/sepomex.json.gz
+data/*.tmp

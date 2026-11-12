@@ -1,0 +1,69 @@
+<%- include('header') %>
+<%
+  const cancelado = p.estado === 'cancelado', envio = p.entrega === 'envio', de = p.datos_entrega || {};
+  const pasos = [['pendiente', 'Confirmado', 'Recibimos tu pago'], ['preparado', 'Preparado', envio ? 'Listo para enviar' : 'Listo para recoger'], ['entregado', envio ? 'Entregado' : 'Recogido', 'Pedido completado']];
+  const actual = pasos.findIndex(s => s[0] === p.estado);
+  const nombre = (de.nombre || '').split(' ')[0];
+  const lotes = p.compras.length;
+%>
+<section class="order-hero">
+  <% if (confirmado && !cancelado) { %><div class="order-success" role="status"><span class="order-success-icon" aria-hidden="true">✓</span><div><strong>Pago de prueba aprobado</strong><p>Tu pedido quedó registrado. Guarda el folio para darle seguimiento.</p></div></div><% } %>
+  <span class="shop-kicker"><%= cancelado ? 'PEDIDO CANCELADO' : 'TU COMPRA EN LA LONJA' %></span>
+  <h1><%= confirmado && !cancelado && nombre ? `¡Gracias, ${nombre}!` : cancelado ? 'Pedido cancelado' : 'Detalle de tu pedido' %><span>.</span></h1>
+  <div class="order-folio">
+    <div><small>Folio de seguimiento</small><strong><%= folio(p) %></strong></div>
+    <button type="button" class="folio-copy" data-copy="<%= folio(p) %>">Copiar</button>
+  </div>
+  <p class="order-meta">Realizado el <%= fecha(p.fecha) %> a las <%= hora(p.fecha) %> · <%= lotes %> <%= lotes === 1 ? 'lote' : 'lotes' %> · <%= envio ? 'Envío nacional' : 'Recogida en la lonja' %></p>
+</section>
+
+<% if (cancelado) { %>
+<div class="order-cancel" role="note"><strong>Devolución ficticia de <%= money(p.total) %></strong><span>Incluye el costo de entrega. Motivo: <%= p.motivo %></span></div>
+<% } else { %>
+<ol class="order-steps" aria-label="Estado del pedido">
+  <% pasos.forEach(([clave, titulo, texto], i) => { %><li class="<%= i <= actual ? 'is-done' : i === actual + 1 ? 'is-next' : '' %>" <%- i === actual ? 'aria-current="step"' : '' %>><span class="step-dot" aria-hidden="true"><%= i <= actual ? '✓' : i + 1 %></span><div><strong><%= titulo %></strong><small><%= texto %></small></div></li><% }) %>
+</ol>
+<% } %>
+
+<div class="order-layout">
+  <section class="order-card">
+    <h2>Productos</h2>
+    <% for (const c of p.compras) { const d = c.detalle || {}; const rasgos = [d.presentacion, d.conservacion, d.calibre].filter(Boolean); %>
+    <article class="order-item">
+      <img src="<%= d.imagen || c.lote.especie.imagen %>" alt="" loading="lazy">
+      <div class="order-item-copy">
+        <h3><%= d.nombre || c.lote.especie.nombre %></h3>
+        <small>Lote #<%= c.id_lte %> · <%= kilos(d.kilos || c.lote.kilos) %> kg · <%= d.cajas || c.lote.numero_cajas %> <%= Number(d.cajas || c.lote.numero_cajas) === 1 ? 'caja' : 'cajas' %> · <%= money(c.precio_kilo_final) %>/kg</small>
+        <% if (rasgos.length) { %><div class="order-item-tags"><% for (const r of rasgos) { %><span><%= r %></span><% } %></div><% } %>
+        <% if (d.procedencia) { %><small class="order-item-origin">Procedencia: <%= d.procedencia %></small><% } %>
+      </div>
+      <strong class="order-item-total"><%= money(c.precio_total) %></strong>
+    </article>
+    <% } %>
+  </section>
+
+  <aside class="order-aside">
+    <section class="order-card">
+      <h2>Resumen</h2>
+      <dl class="order-totals">
+        <div><dt>Productos</dt><dd><%= money(p.subtotal) %></dd></div>
+        <div><dt>Entrega</dt><dd><%= Number(p.envio) ? money(p.envio) : 'Gratis' %></dd></div>
+        <div class="order-total"><dt>Total MXN</dt><dd><%= money(p.total) %></dd></div>
+      </dl>
+      <div class="order-payment">
+        <% if (p.metodo === 'tarjeta') { %><img src="/img/pagos/<%= p.marca === 'Visa' ? 'visa' : 'mastercard' %>.svg" alt="<%= p.marca %>"><span><%= p.marca %> terminada en <%= p.ultimos %></span>
+        <% } else { %><img src="/img/pagos/paypal.svg" alt="PayPal"><span>PayPal (simulado)</span><% } %>
+      </div>
+      <small class="order-reference">Referencia de pago: <%= p.referencia %></small>
+    </section>
+    <section class="order-card">
+      <h2><%= envio ? 'Se enviará a' : 'Recógelo en' %></h2>
+      <% if (envio) { %><p class="order-address"><strong><%= de.nombre %></strong><%= de.calle %> <%= de.numero %>, <%= de.colonia %><br>C.P. <%= de.cp %>, <%= de.municipio %><%= de.estado ? ', ' + de.estado : '' %></p>
+      <% } else { %><p class="order-address"><strong><%= de.recogida %></strong><%= de.horario %></p><% } %>
+      <p class="order-contact">Contacto: <%= de.telefono %><br><%= de.correo %></p>
+    </section>
+  </aside>
+</div>
+
+<div class="order-actions"><a class="shop-btn shop-btn-outline" href="/mis-pedidos">← Mis pedidos</a><a class="shop-btn shop-btn-dark" href="/#catalogo">Seguir comprando ↗</a></div>
+<%- include('footer') %>

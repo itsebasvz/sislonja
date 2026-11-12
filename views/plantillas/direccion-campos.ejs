@@ -1,0 +1,9 @@
+<% const v = locals.v || {}, cls = locals.campo || ''; %>
+<label class="<%= cls %>">Código postal<input name="cp" id="direccion-cp" maxlength="5" minlength="5" pattern="[0-9]{5}" inputmode="numeric" autocomplete="shipping postal-code" aria-describedby="direccion-ayuda" placeholder="Ej. 91700" value="<%= v.cp || '' %>"></label>
+<label class="<%= cls %>">Estado<select name="estado" autocomplete="shipping address-level1"><option value="">Selecciona un estado</option><% for (const e of estados) { %><option value="<%= e.id %>" <%= v.estado === e.id ? 'selected' : '' %>><%= e.nombre === 'México' ? 'Estado de México' : e.nombre %></option><% } %></select></label>
+<p class="address-status" id="direccion-ayuda" role="status" aria-live="polite" hidden></p>
+<label class="<%= cls %>">Municipio / alcaldía<select name="municipio" autocomplete="shipping address-level2" data-valor="<%= v.municipio || '' %>"><option value="">Selecciona primero tu estado o CP</option></select></label>
+<label class="<%= cls %>">Colonia / asentamiento<select name="colonia" autocomplete="shipping address-level3" data-valor="<%= v.colonia || '' %>"><option value="">Ingresa tu código postal</option></select></label>
+<label class="<%= cls %>">Calle<input name="calle" maxlength="120" autocomplete="shipping address-line1" placeholder="Nombre de la calle" value="<%= v.calle || '' %>"></label>
+<label class="<%= cls %>">Número exterior / interior<input name="numero" maxlength="30" autocomplete="shipping address-line2" placeholder="Ej. 108, interior 2" value="<%= v.numero || '' %>"></label>
+<% if (locals.etiqueta) { %><label class="<%= cls %> address-label">Nombre del domicilio (opcional)<input name="etiqueta" data-optional maxlength="40" placeholder="Casa, Restaurante, Bodega…" value="<%= v.etiqueta || '' %>"></label><% } %>
