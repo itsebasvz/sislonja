@@ -1,0 +1,27 @@
+<%- include('header') %>
+<section class="shop-page-heading">
+  <h1>Mis pedidos<span>.</span></h1>
+  <nav class="account-tabs" aria-label="Tu cuenta">
+    <a href="/mis-pedidos" aria-current="page">Mis pedidos</a>
+    <a href="/mis-direcciones">Mis direcciones</a>
+  </nav>
+</section>
+<section class="shop-summary compras-resumen" aria-labelledby="compras-resumen-titulo">
+  <h2 id="compras-resumen-titulo">Resumen de compras</h2>
+  <form action="/mis-pedidos" method="get" class="compras-filtros">
+    <label>Período<select name="periodo"><% for(const [key,label] of [['dia','Día'],['semana','Semana'],['mes','Mes']]){ %><option value="<%= key %>" <%= informe.periodo.tipo===key?'selected':'' %>><%= label %></option><% } %></select></label>
+    <label>Fecha de referencia<input name="fecha" type="date" value="<%= informe.periodo.referencia %>" max="<%= informe.periodo.actual %>" required></label>
+    <button class="shop-btn shop-btn-dark">Consultar</button>
+    <a class="shop-btn shop-btn-outline" href="/mis-pedidos/descargar?periodo=<%= informe.periodo.tipo %>&amp;fecha=<%= informe.periodo.referencia %>">Descargar CSV <span aria-hidden="true">↓</span></a>
+  </form>
+  <p><%= informe.periodo.etiqueta %></p>
+  <dl class="compras-cifras">
+    <div><dt>Lotes</dt><dd><%= informe.resumen.lotes %></dd></div>
+    <div><dt>Peso</dt><dd><%= kilos(informe.resumen.kilos) %> kg</dd></div>
+    <div><dt>Subtotal</dt><dd><%= money(informe.resumen.subtotal) %></dd></div>
+    <div><dt>Envío</dt><dd><%= money(informe.resumen.envio) %></dd></div>
+    <div><dt>Total gastado</dt><dd><%= money(informe.resumen.total) %> MXN</dd></div>
+  </dl>
+</section>
+<%- include('../plantillas/pedidos-lista',{staff:false}) %>
+<%- include('footer') %>

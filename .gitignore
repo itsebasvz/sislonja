@@ -12,3 +12,8 @@ public/img/especies/subidas/*
 # Catálogo SEPOMEX de uso local: descargar durante la instalación.
 data/sepomex.json.gz
 data/*.tmp
+
+lonja-api/data/sepomex.json.gz
+lonja-api/data/*.tmp
+lonja-api/public/img/especies/subidas/*
+!lonja-api/public/img/especies/subidas/.gitkeep

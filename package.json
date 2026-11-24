@@ -1,52 +1,12 @@
 {
   "name": "sislonja",
-  "version": "1.0.0",
-  "description": "Sistema Lonja \u00b7 Programaci\u00f3n Web 2 \u00b7 Segundo parcial",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "server": "nodemon index.js",
-    "db:local": "node scripts/db-local.js",
-    "db:init": "node scripts/db-init.js",
-    "db:demo": "node scripts/db-demo.js",
-    "test": "node --test test/*.test.js",
-    "test:integration": "node --test test/integration.js test/tienda-integration.js",
-    "check": "node scripts/check.js",
-    "mail:demo": "node scripts/mail-test.js",
-    "entrega": "node scripts/entrega.js",
-    "db:export": "node scripts/export-sql.js",
-    "db:historico": "node scripts/db-historico.js",
-    "db:tienda": "node scripts/db-tienda.js",
-    "db:tienda:demo": "node scripts/db-tienda-demo.js",
-    "db:catalogo": "node scripts/db-catalogo.js",
-    "cp:actualizar": "node scripts/actualizar-codigos-postales.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
-    "csurf": "^1.11.0",
-    "dotenv": "^18.0.5",
-    "ejs": "^7.0.1",
-    "express": "^5.2.1",
-    "express-validator": "^7.3.2",
-    "jsonwebtoken": "^9.0.3",
-    "mariadb": "^3.5.4",
-    "method-override": "^3.0.0",
-    "nodemailer": "^10.1.7",
-    "sequelize": "^6.37.8",
-    "socket.io": "^4.8.4"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
-  },
+  "version": "3.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "entrega": "node scripts/entrega.js",
+    "check": "npm --prefix lonja-api run check && node --check lonja-cliente/app.js && node --check lonja-cliente/index.js",
+    "test": "npm --prefix lonja-api test",
+    "test:integration": "npm --prefix lonja-api run test:integration"
+  }
 }

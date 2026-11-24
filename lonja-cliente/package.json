@@ -1,0 +1,20 @@
+{
+  "name": "lonja-cliente",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env index.js",
+    "server": "nodemon --exec \"node --env-file=.env\" index.js",
+    "dev": "npm run server"
+  },
+  "dependencies": {
+    "express": "5.3.0",
+    "ejs": "7.0.2",
+    "cookie-parser": "1.4.7",
+    "method-override": "3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
